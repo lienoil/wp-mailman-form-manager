@@ -1,0 +1,27 @@
+{
+  "name": "jquery-slugger",
+  "version": "1.0.3",
+  "description": "A jQuery plugin to auto generate a url friendly slug",
+  "main": "index.js",
+  "authors": [
+    "John Lioneil Dionisio"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "jquery-plugin",
+    "ecosystem:jquery",
+    "slugger",
+    "repeater"
+  ],
+  "homepage": "https://github.com/lioneil/jquery-slugger",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^1.11.1"
+  }
+}

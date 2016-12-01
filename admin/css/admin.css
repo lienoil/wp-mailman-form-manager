@@ -1,0 +1,14 @@
+.after-title {
+	margin-top: 2rem;
+}
+.row-group {
+	margin-bottom: 1rem;
+}
+.regular-text-fluid {
+	max-width: 100%;
+	width: 100%;
+}
+
+.clonable-block .clonable:not(:first-child) .clonable-button-close {
+	display: block !important;
+}
