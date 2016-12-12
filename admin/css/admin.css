@@ -1,14 +1,83 @@
 .after-title {
 	margin-top: 2rem;
 }
-.row-group {
+.m-t-2 {
+	margin-top: 2rem;
+}
+.group-title {
+	margin-top: 3rem;
+	padding-top: 1rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.row-group,
+.form-group,
+.radio-group {
 	margin-bottom: 1rem;
 }
-.regular-text-fluid {
+
+.regular-select {
+	width: 27em;
+}
+
+.regular-text-fluid,
+.regular-select-fluid {
 	max-width: 100%;
 	width: 100%;
 }
 
+.mailman-form-settings .regular-text,
+.mailman-form-settings .regular-select {
+	display: block;
+}
+
+.regular-select .selectize-input,
+.regular-select-fluid .selectize-input {
+	padding: 3px 5px;
+	border-radius: 0;
+}
+.selectize-dropdown .active {
+	background: #0073aa;
+	color: #ffffff;
+}
+.regular-text-addon {
+	margin: 0;
+}
+
 .clonable-block .clonable:not(:first-child) .clonable-button-close {
 	display: block !important;
+}
+
+.panelbox {
+	border: 1px solid #e5e5e5;
+	box-shadow: 0 1px 1px rgba(0,0,0,.04);
+	background: #fff;
+}
+
+.panel-block,
+.panel-footer,
+.panel-header,
+.panelbox {
+	padding: 1rem;
+}
+
+.help-block {
+	border: 1px solid rgba(0,0,0,0.1);
+	padding: 1rem;
+}
+
+.badge {
+	padding: 3px;
+	background: rgba(0,0,0,0.05);
+}
+
+.text-center {
+	text-align: center;
+}
+
+.list-group .list-group-item-box {
+	min-height: 30px;
+	background: rgba(0,0,0,0.04);
+	border: 1px solid #ccc;
+	margin-bottom: 1rem;
 }

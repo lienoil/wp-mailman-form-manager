@@ -5,8 +5,8 @@ return array(
 		'for' => 'field',
 		'id' => 'field',
 		'title' => 'Field',
-		'view' => '/includes/views/forms/field.php',
-		'name' => 'fieldmetabox',
+		'view' => '/includes/views/admin/field.php',
+		'name' => 'field',
 		'context' => 'normal',
 	),
 
@@ -14,8 +14,8 @@ return array(
 		'for' => 'form',
 		'id' => 'form',
 		'title' => 'Forms',
-		'view' => '/includes/views/forms/form.php',
-		'name' => 'formmetabox',
+		'view' => '/includes/views/admin/form.php',
+		'name' => 'form',
 		'context' => 'normal',
 	),
 );

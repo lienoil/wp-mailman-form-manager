@@ -32,8 +32,20 @@ return array(
 		'name' => 'field',
 		'single' => 'Field',
 		'plural' => 'Fields',
+		'hierarchical' => false,
 		'args' => array(
 			'supports' => array( 'title' ),
+			'show_in_menu' => 'edit.php?post_type=form',
+		),
+	),
+
+	'template' => array(
+		'name' => 'template',
+		'single' => 'Template',
+		'plural' => 'Templates',
+		'hierarchical' => false,
+		'args' => array(
+			'supports' => array( 'title', 'editor' ),
 			'show_in_menu' => 'edit.php?post_type=form',
 		),
 	),
