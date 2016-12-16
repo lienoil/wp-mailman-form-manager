@@ -1,0 +1,63 @@
+<?php
+$form = $the_post;
+$template = get_post( $the_post_options['display_template'] );
+$content = $template->post_content;
+
+// $content = preg_replace('/loop-row/', 'div class="row"', $content);
+
+if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
+	$this->send();
+}
+
+ ?>
+
+<form id="wp-mailman-form-manager-<?php echo $form->ID; ?>" action="<?php #echo esc_url( admin_url('admin-post.php') ); ?>" class="wp-mailman-form-manager wp-mailman-form-manager-<?php echo $form->ID; ?>" method="<?php echo $the_post_options['method']; ?>" novalidate>
+
+	<?php # action hidden input ?>
+	<input type="hidden" name="action" value="<?php echo $pluginname; ?>">
+	<?php $this->get_nonce(); ?>
+
+	<?php foreach ( $the_post_options['fields'] as $field ) {
+		$loop_content = $content;
+		$field = get_post( $field['name'] );
+		$forms = $this->forms;
+		$field_options = get_post_meta( $field->ID, $forms['field']['name'], true );
+
+		$field_options['type'] = $field_options['type'] !== "" ? $field_options['type'] : 'text'; ?>
+
+		<div class="col-sm-12">
+			<div class='form-group'>
+
+				<?php if ( isset( $field_options['show_label'] ) && $field_options['show_label'] ) : ?>
+					<label for="<?php echo $field_options['name']; ?>"><?php echo $field_options['label']; ?></label>
+				<?php endif; ?>
+
+				<?php
+				$defaults = array();
+				foreach ( $field_options['attributes'] as $attribute ) {
+					$defaults[ $attribute['name'] ] = $attribute['value'];
+				}
+
+				$attr = array_merge( array(
+					'id' => $field_options['name'],
+					'name' => $field_options['name']."[value]",
+					'required' => isset( $field_options['required'] ) ? "required" : false
+				), $defaults );
+
+				echo FormBuilder::make_field( $field_options['type'], $attr, $field_options['value'], isset( $_POST[ $field_options['name'] ]['value'] ) ? $_POST[ $field_options['name'] ]['value'] : null ); ?>
+				<input type="hidden" name="<?php echo $field_options['name'].'[ID]'; ?>" value="<?php echo $field->ID; ?>">
+				<?php echo $this->errors( $field_options['name'] ); ?>
+
+			</div>
+		</div>
+
+	<?php } ?>
+
+	<div class="col-sm-12">
+		<div class="form-group">
+			<input type="hidden" name="submitted" value="1">
+			<button type="submit" class="btn btn-success button button-primary">Send</button>
+		</div>
+	</div>
+
+</form>

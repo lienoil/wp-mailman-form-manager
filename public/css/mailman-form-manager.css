@@ -1,0 +1,9 @@
+.wp-mailman-form-manager label.error,
+.wp-mailman-form-manager p.error,
+.wp-mailman-form-manager span.error {
+	color: #800000;
+}
+
+.wp-mailman-form-manager p:empty {
+	display: none;
+}
