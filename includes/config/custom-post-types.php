@@ -26,12 +26,13 @@ return array(
 			'rewrite' => true,
 			'supports' => array( 'title' ),
 		),
+		'shortcodable' => true,
 	),
 
 	'field' => array(
 		'name' => 'field',
-		'single' => 'Field',
-		'plural' => 'Fields',
+		'single' => 'Form Field',
+		'plural' => 'Form Fields',
 		'hierarchical' => false,
 		'args' => array(
 			'supports' => array( 'title' ),
@@ -39,14 +40,25 @@ return array(
 		),
 	),
 
-	'template' => array(
-		'name' => 'template',
-		'single' => 'Template',
-		'plural' => 'Templates',
+	'form-template' => array(
+		'name' => 'form-template',
+		'single' => 'Form Template',
+		'plural' => 'Form Templates',
 		'hierarchical' => false,
 		'args' => array(
 			'supports' => array( 'title', 'editor' ),
 			'show_in_menu' => 'edit.php?post_type=form',
+		),
+	),
+
+	'message-template' => array(
+		'name' => 'message-template',
+		'single' => 'Message Template',
+		'plural' => 'Message Templates',
+		'hierarchical' => false,
+		'args' => array(
+			'supports' => array( 'title', 'editor' ),
+			'show_in_menu' => 'edit.php?post_type=message',
 		),
 	),
 );

@@ -1,15 +1,16 @@
 <?php
 
 return array(
-	'url' => 'Is URL',
-	'email' => 'Is Email',
 	'required' => 'Is Required',
+	'email' => 'Is Email',
+	'alphanumeric' => 'Is Alphanumeric',
+	'minlength' => 'Minimum Length',
+	'maxlength' => 'Maximum Length',
+	'number' => 'Require Decimal Number',
+	'digits' => 'Require Digits only',
+	'url' => 'Is URL',
 	'date' => 'Is Valid Date',
 	'time' => 'Is Valid Time',
 	'datetime' => 'Is Valid DateTime',
-	'minlength' => 'Minimum Length',
-	'maxlength' => 'Maximum Length',
 	'rangelength' => 'Range Length',
-	'number' => 'Require Decimal Number',
-	'digits' => 'Require Digits only',
 );
