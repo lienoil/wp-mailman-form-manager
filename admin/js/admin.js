@@ -103,5 +103,9 @@ jQuery(document).ready(function ($) {
 	////////////////
 	// Ugly fixes //
 	////////////////
-	$('span:contains(Saveed)').text('Saved');
+	$('span:contains(Saveed), td:contains(Saveed)').each(function (e) {
+		var text = $(this).text();
+		text = text.replace('Saveed', 'Saved ');
+		$(this).text(text);
+	});
 });

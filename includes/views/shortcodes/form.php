@@ -22,9 +22,9 @@ if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 	 * Validate
 	 *
 	 */
-	$is_valid = WP_Mailman_Emailer::valid( $this->globals['nonce'], $this->forms['field']['name'], $post_fields );
+	$is_valid = WP_Mailman_Emailer::valid( $this->forms['field']['name'], $post_fields, $this->globals['nonce'] );
 
-	// if ( $is_valid != false ) {
+	if ( $is_valid === true ) {
 
 		/**
 		 * Send To User
@@ -51,11 +51,11 @@ if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 
 		WP_Mailman_Emailer::send( $email_array, $settings_options );
 
-	// } else {
+	} else {
 
-	// 	$this->form_errors = $is_valid;
+		$this->form_errors = $is_valid;
 
-	// }
+	}
 }
 
 /**
@@ -78,6 +78,7 @@ $template_content = FormBuilder::remove_empty_paragraphs( $template_content );
 	<?php # action hidden input ?>
 	<input type="hidden" name="action" value="<?php echo $pluginname; ?>">
 	<?php $this->get_nonce(); ?>
+	<?php # echo isset( $this->form_errors['nonce'] ) ? $this->get_error('nonce') : ''; ?>
 
 	<?php
 
@@ -160,10 +161,9 @@ $template_content = FormBuilder::remove_empty_paragraphs( $template_content );
 	 *
 	 */
 	ob_start();
-	?>
-	<input type="hidden" name="submitted" value="1">
-	<button type="submit" class="btn btn-success button button-primary">Send</button>
-	<?php
+	$label = $form_options['submit_button']['label'];
+	$attributes = $form_options['submit_button']['attributes'];
+	echo FormBuilder::make_submit( $label, $attributes );
 	$submit_button = ob_get_clean();
 	$template_content = str_replace( FormBuilder::$pattern_submit, $submit_button, $template_content );
 

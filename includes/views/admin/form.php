@@ -87,6 +87,120 @@
 	</div>
 
 	<div class="row row-group">
+		<div class="two columns">
+			<label for="<?php echo $name.'[submit_button][label]'; ?>"><strong>Submit Button</strong></label>
+		</div>
+
+		<div class="panelbox ten columns">
+			<div class="form-group">
+				<div class="row">
+					<div class="ten columns">
+						<label for="<?php echo $name.'[submit_button][label]'; ?>"><strong><?php _e( 'Label', $globals['text-domain'] ) ?></strong></label>
+						<input name="<?php echo $name.'[submit_button][label]'; ?>" id="<?php echo $name.'[submit_button][label]'; ?>" class="regular-text-fluid" type="text" value="<?php echo @$old['submit_button']['label'] ?>">
+					</div>
+				</div>
+			</div>
+			<div class="form-group clonable-block" data-toggle="cloner">
+				<div class="row">
+					<div class="five columns">
+						<label for="<?php echo $name.'[submit_button][attributes][0][name]' ?>"><strong><?php _e( 'Attribute Name', $globals['text-domain'] ); ?></strong></label>
+					</div>
+					<div class="five columns">
+						<label for="<?php echo $name.'[submit_button][attributes][0][value]' ?>"><strong><?php _e( 'Attribute Value', $globals['text-domain'] ); ?></strong></label>
+					</div>
+				</div>
+
+				<?php if ( ! isset( $old['submit_button']['attributes'] ) && ! empty( $old['submit_button']['attributes'] ) ) : ?>
+					<div class="row row-group clonable">
+						<div class="five columns">
+							<input name="<?php echo $name.'[submit_button][attributes][0][name]'; ?>" id="<?php echo $name.'[submit_button][attributes][0][name]'; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text">
+						</div>
+						<div class="five columns">
+							<input name="<?php echo $name.'[submit_button][attributes][0][value]'; ?>" id="<?php echo $name.'[submit_button][attributes][0][value]'; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text">
+						</div>
+						<div class="two columns">
+							<button class="button button-default pull-right clonable-button-close" type="button"><?php _e( 'Remove', $globals['text-domain'] ); ?></button>
+						</div>
+					</div>
+				<?php else : ?>
+					<?php $i = 0; foreach ( $old['submit_button']['attributes'] as $i => $attribute ) : ?>
+						<div class="row row-group clonable">
+							<div class="five columns">
+								<input name="<?php echo $name."[submit_button][attributes][$i][name]"; ?>" id="<?php echo $name."[submit_button][attributes][$i][name]"; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text" value="<?php echo @$attribute['name'] ?>">
+							</div>
+							<div class="five columns">
+								<input name="<?php echo $name."[submit_button][attributes][$i][value]"; ?>" id="<?php echo $name."[submit_button][attributes][$i][value]"; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text" value="<?php echo @$attribute['value'] ?>">
+							</div>
+							<div class="two columns">
+								<button class="button button-default pull-right clonable-button-close" type="button"><?php _e( 'Remove', $globals['text-domain'] ); ?></button>
+							</div>
+						</div>
+					<?php $i++; endforeach; ?>
+				<?php endif; ?>
+
+				<div class="row row-group">
+					<div class="twelve columns">
+						<button type="button" class="button button-default clonable-button-add"><?php _e( 'Add Attribute', $globals['text-domain'] ) ?></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row row-group">
+		<div class="two columns">
+			<label for="<?php echo $name.'[display]'; ?>"><strong>Extra Buttons</strong></label>
+		</div>
+
+		<div class="ten columns">
+			<p class="description"><?php _e( 'Used for other types of buttons, e.g. Reset, Download, Help, etc.', $globals['text-domain'] ) ?></p>
+
+			<div class="clonable-block sortables" data-toggle="cloner">
+				<div class="row row-group clonable panelbox sortable">
+					<div class="ten columns">
+						<div class="row row-group">
+							<div class="twelve columns">
+								<label for=""><strong><?php _e( 'Button 1', $globals['text-domain'] ); ?></strong></label>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="twelve columns">
+								<label for=""><strong><?php _e( 'Button Type', $globals['text-domain'] ); ?></strong></label>
+							</div>
+						</div>
+						<div class="row row-group">
+							<div class="twelve columns">
+								<select name="" id="" class="regular-select-fluid regular-select-box">
+								<option value="reset">Reset Button</option>
+									<option value="link">Link Button</option>
+									<option value="button">Button Field</option>
+									<option value="input">Input Button</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="five columns">
+								<label for=""><?php _e( 'Label', $globals['text-domain'] ); ?></label>
+							</div>
+							<div class="five columns">
+
+							</div>
+						</div>
+
+					</div>
+					<div class="two columns">
+						close button
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div class="row row-group">
 		<h3 class="group-title"><?php _e('Display', $globals['text-domain']); ?></h3>
 	</div>
 

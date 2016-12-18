@@ -29,12 +29,13 @@ class WP_Mailman_Emailer
 
 	public static function make_message_from_template( $post_fields, $message_template )
 	{
-		echo "<pre>";
-		    var_dump( $post_fields ); die();
-		echo "</pre>";
+		// echo "<pre>";
+		// echo "MAKE MESSAFE";
+		//     var_dump( $post_fields );
+		// echo "</pre>";
 	}
 
-	public static function valid( $nonce, $post_metaname = "", $post_fields = null )
+	public static function valid( $post_metaname = "", $post_fields = null, $nonce = null )
 	{
 		/**
 	     * At this point, $_GET/$_POST variable are available
@@ -43,13 +44,15 @@ class WP_Mailman_Emailer
 	     */
 	    $post_fields = is_null( $post_fields ) ? $_POST : $post_fields;
 
+	    self::$errors = array();
+
 	    /**
 	     * Check Nonce
 	     *
 	     */
-	    if ( ! isset( $post_fields[ $nonce ] ) ) return false;
+	    // if ( ! isset( $_POST[ $nonce ] ) ) self::$errors['nonce'] = "Critical Error! No nonce sensed.";
 
-	    self::$errors = array();
+	    // if ( ( isset( $_POST[ $nonce ] ) && ! wp_verify_nonce( $_POST[ $nonce ], $nonce ) ) ) self::$errors['nonce'] = "No nonce sensed.";
 
 	    foreach ( $post_fields as $name => $post_field ) {
 
@@ -89,7 +92,7 @@ class WP_Mailman_Emailer
 		    	/**
 		    	 * If `required` is set in the rules and the user input is empty,
 		    	 * then let's clear all previous error for that field, and put
-		    	 * the `required` error message.
+		    	 * only the `required` error message.
 		    	 * The effect is, when the user submitted with an empty field, then
 		    	 * only a `required` error message will be sent back for that particular field,
 		    	 * otherwise all other error messages will kick in.
@@ -125,7 +128,7 @@ class WP_Mailman_Emailer
 
 		switch ( $name ) {
 			case 'required':
-				if ( ! empty( $input ) || $input !== "" ) return $value;
+				if ( ! empty( $input ) || "" !== $input ) return $value;
 				break;
 
 			case 'email':
@@ -145,7 +148,7 @@ class WP_Mailman_Emailer
 				break;
 
 			case 'minlength':
-				if ( strlen( $input ) >= $value ) return true;
+				if ( "" !== $input && strlen( $input ) >= $value ) return true;
 				break;
 
 			case 'url':
@@ -246,6 +249,8 @@ class WP_Mailman_Emailer
 			if ( isset( $post_field['ID'] ) && isset( $post_field['value'] ) ) {
 				$sanitized_fields[ $name ]['ID'] = $post_field['ID'];
 				$sanitized_fields[ $name ]['value'] = sanitize_text_field( $post_field['value'] );
+			} else {
+				$sanitized_fields[ $name ] = $post_field;
 			}
 		}
 
@@ -262,10 +267,6 @@ class WP_Mailman_Emailer
 	public static function send( $email_array, $options )
 	{
 		$protocol = isset( $options['protocol'] ) ? $options['protocol'] : 'smtp_fallback';
-
-		echo "<pre>";
-		    var_dump( $options );
-		echo "</pre>";
 
 		$subject = $email_array['subject'];
 		$message = $email_array['message'];
@@ -288,11 +289,11 @@ class WP_Mailman_Emailer
 			 */
 			case 'smtp_fallback':
 				$mail = self::smtp_init( $subject, $message, $emails, $embeds, $attachments, $options );
-				if (!$mail->Send()){
-					echo "<pre>";
-					    var_dump( $mail->errorInfo() ); die();
-					echo "</pre>";
-				}
+					// echo "<pre>";
+					//     var_dump( $mail ); die();
+					// echo "</pre>";
+				// if (!$mail->Send()){
+				// }
 				break;
 
 			/**
@@ -334,8 +335,8 @@ class WP_Mailman_Emailer
 	{
 		$post_fields = ! is_null( $post_fields ) ? $post_fields : $_POST;
 
-		$subject = $options['template']['subject'];
-		$message = $options['template']['message'];
+		$subject = isset( $options['template']['subject'] ) ? $options['template']['subject'] : "";
+		$message = isset( $options['template']['message'] ) ? $options['template']['message'] : "";
 		$embedded = array();
 		$attachments = array();
 

@@ -22,6 +22,7 @@
 							id="<?php echo $name.'[sending][user]'; ?>"
 							value="true"
 							<?php echo FormBuilder::check_if_checked(true, @$old['sending']['user']); ?>> <?php _e( '<strong>Send to User</strong>. Send a response email to the user upon form submission.', $globals['text-domain'] ) ?>
+						<span class="description"><?php _e('You may specify the Message Template per form.', $globals['text-domain']) ?></span>
 					</label>
 				</div>
 				<div class="form-group">

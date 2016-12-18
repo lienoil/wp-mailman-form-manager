@@ -2,10 +2,10 @@
 
 class FormBuilder extends WP_Mailman_Form_Manager
 {
-	protected static $regex_loop = '#<loop[^>]*>(.*?)</loop>#s';
+	protected static $regex_loop = '#\[loop[^\]]*\]>(.*?)\[/loop\]#s';
 	protected static $regex_empty_paragraph = '#<p>(\s|&nbsp;|</?\s?br\s?/?>)*</?p>#';
-	protected static $pattern_start_loop = '<loop>';
-	protected static $pattern_end_loop = '</loop>';
+	protected static $pattern_start_loop = '[loop]';
+	protected static $pattern_end_loop = '[/loop]';
 	protected static $pattern_label = '%label%';
 	protected static $pattern_field = '%field%';
 	protected static $pattern_error = '%error%';
@@ -68,6 +68,24 @@ class FormBuilder extends WP_Mailman_Form_Manager
 		<?php
 	}
 
+	public static function make_submit( $label, $attributes = array(), $is_html5 = true )
+	{
+		$attr_arr = array();
+
+		foreach ( $attributes as $attribute ) {
+			$attr_arr[] = "{$attribute['name']}='{$attribute['value']}'";
+
+		}
+
+		$attr_html = implode( " ", $attr_arr );
+
+		if ( $is_html5 ) {
+			return "<input type='hidden' name='submitted' value='1'><button $attr_html name='submit' type='submit'>$label</button>";
+		}
+
+		return "<input type='hidden' name='submitted' value='1'><input $attr_html name='submit' value='$label'>";
+	}
+
 	/**
 	 * Gets the pattern out the $content.
 	 *
@@ -81,9 +99,11 @@ class FormBuilder extends WP_Mailman_Form_Manager
 
 		preg_match_all( $pattern, $subject, $matches );
 
-		if ( $include_parent ) return $matches[0][0];
+		if ( empty( $matches ) ) return false;
 
-		return $matches[1][0];
+		if ( isset( $matches[0][0] ) && $include_parent ) return $matches[0][0];
+
+		return isset( $matches[1][0] ) ? $matches[1][0] : $matches[0];
 	}
 
 	public static function make_content( $replacement, $subject )

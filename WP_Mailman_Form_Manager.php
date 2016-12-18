@@ -478,7 +478,7 @@ class WP_Mailman_Form_Manager
 		           	// 'Preview' => 'Lurk',
 		           	'Saveed' => 'Saved',
 		        ),
-		    	'post_type' => array( 'message-template', 'form-template' ),
+		    	'post_type' => array( 'message-template', 'form-template', 'form', 'field' ),
 		    );
 
 	        if ( 'backend' == $params['context'] ) {
@@ -574,6 +574,8 @@ class WP_Mailman_Form_Manager
 	public function get_error( $name, $return_type = 'html' )
 	{
 		$errors = $this->form_errors;
+
+		if ( ! is_array( $errors[ $name ] ) ) return $errors[ $name ];
 
 		if ( ! isset( $errors[ $name ] ) ) return false;
 
