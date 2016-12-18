@@ -16,7 +16,7 @@ a[role="button"] {
 .m-t-2 {
 	margin-top: 2rem;
 }
-.group-title {
+.wp-mailman-form-manager .group-title {
 	margin-top: 3rem;
 	padding-top: 1rem;
 	padding-bottom: 0.5rem;

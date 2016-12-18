@@ -168,24 +168,26 @@ $validations = require $this->dir . '/includes/config/fields-validation.php';
 
 				<?php if ( ! isset( $old['rules'] ) && empty( $old['rules'] ) ) : ?>
 
-					<div class="clonable row row-group">
+					<div class="clonable">
 						<div class="row row-group">
 							<div class="twelve columns">
 								<span class="regular-text-addon" type="text"><?php _e('Rule ', $globals['text-domain']) ?><span class="clonable-increment-html">1</span></span>
 							</div>
 						</div>
-						<div class="three columns">
-							<?php FormBuilder::make_select( $name.'[rules][0][name]', null, 'regular-select-fluid regular-select-box clonable-increment-name', $validations ); ?>
-						</div>
-						<div class="two columns">
-							<input name="<?php echo $name.'[rules][0][value]'; ?>" value="" class="regular-text-fluid clonable-increment-name" type="text" placeholder="value">
-						</div>
-						<div class="five columns">
-							<input name="<?php echo $name.'[rules][0][message]'; ?>" value="" class="regular-text-fluid clonable-increment-name" type="text" placeholder="Error message">
-							<p class="description">The error message to display to user if the <code>value</code> is not met.</p>
-						</div>
-						<div class="two columns">
-							<button type="button" class="button button-small button-default clonable-button-close">Remove</button>
+						<div class="row">
+							<div class="three columns">
+								<?php FormBuilder::make_select( $name.'[rules][0][name]', null, 'regular-select-fluid regular-select-box clonable-increment-name', $validations ); ?>
+							</div>
+							<div class="two columns">
+								<input name="<?php echo $name.'[rules][0][value]'; ?>" value="" class="regular-text-fluid clonable-increment-name" type="text" placeholder="value">
+							</div>
+							<div class="five columns">
+								<input name="<?php echo $name.'[rules][0][message]'; ?>" value="" class="regular-text-fluid clonable-increment-name" type="text" placeholder="Error message">
+								<p class="description">The error message to display to user if the <code>value</code> is not met.</p>
+							</div>
+							<div class="two columns">
+								<button type="button" class="button button-small button-default clonable-button-close">Remove</button>
+							</div>
 						</div>
 					</div>
 
@@ -193,7 +195,7 @@ $validations = require $this->dir . '/includes/config/fields-validation.php';
 
 					foreach ( $old['rules'] as $i => $rules ) { ?>
 
-						<div class="clonable row row-group">
+						<div class="clonable">
 							<div class="row row-group">
 								<div class="twelve columns">
 									<span class="regular-text-addon" type="text">Rule <span id="span" class="clonable-increment-html"><?php echo $i+1 ?></span></span>

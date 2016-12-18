@@ -110,7 +110,7 @@
 					</div>
 				</div>
 
-				<?php if ( ! isset( $old['submit_button']['attributes'] ) && ! empty( $old['submit_button']['attributes'] ) ) : ?>
+				<?php if ( ! isset( $old['submit_button']['attributes'] ) && empty( $old['submit_button']['attributes'] ) ) : ?>
 					<div class="row row-group clonable">
 						<div class="five columns">
 							<input name="<?php echo $name.'[submit_button][attributes][0][name]'; ?>" id="<?php echo $name.'[submit_button][attributes][0][name]'; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text">
@@ -123,7 +123,9 @@
 						</div>
 					</div>
 				<?php else : ?>
-					<?php $i = 0; foreach ( $old['submit_button']['attributes'] as $i => $attribute ) : ?>
+					<?php
+					$i = 0;
+					foreach ( $old['submit_button']['attributes'] as $i => $attribute ) : ?>
 						<div class="row row-group clonable">
 							<div class="five columns">
 								<input name="<?php echo $name."[submit_button][attributes][$i][name]"; ?>" id="<?php echo $name."[submit_button][attributes][$i][name]"; ?>" class="regular-text-fluid clonable-increment-name clonable-increment-id" type="text" value="<?php echo @$attribute['name'] ?>">
@@ -135,7 +137,9 @@
 								<button class="button button-default pull-right clonable-button-close" type="button"><?php _e( 'Remove', $globals['text-domain'] ); ?></button>
 							</div>
 						</div>
-					<?php $i++; endforeach; ?>
+					<?php
+					$i++;
+					endforeach; ?>
 				<?php endif; ?>
 
 				<div class="row row-group">

@@ -93,7 +93,7 @@
 							<div class="row row-group clonable">
 								<div class="five columns">
 
-									<input name="<?php echo $name.'[mail][to][0]'; ?>" id="<?php echo $name.'[mail][to][0]'; ?>" class="regular-text clonable-increment-name clonable-increment-id" type="email">
+									<input name="<?php echo $name.'[mail][to][0]'; ?>" id="<?php echo $name.'[mail][to][0]'; ?>" class="regular-text clonable-increment-name clonable-increment-id" type="email" value="<?php bloginfo('admin_email'); ?>">
 									<p class="description"><?php _e('defaults to', $globals['text-domain']) ?> <span class="badge"><?php bloginfo('admin_email'); ?></span></p>
 
 								</div>
@@ -109,6 +109,7 @@
 								<div class="row row-group clonable">
 									<div class="five columns">
 										<input name="<?php echo $name."[mail][to][$i]"; ?>" id="<?php echo $name."[mail][to][$i]"; ?>" class="regular-text clonable-increment-name clonable-increment-id" type="email" value="<?php echo @$to; ?>">
+										<p class="description"><?php _e('defaults to', $globals['text-domain']) ?> <span class="badge"><?php bloginfo('admin_email'); ?></span></p>
 									</div>
 									<div class="two columns">
 										<button class="button button-default button-small clonable-button-close" type="button">Remove</button>
