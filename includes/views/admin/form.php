@@ -35,7 +35,7 @@
 							<div class="form-group">
 								<?php
 								@wp_dropdown_pages(array(
-									'name' => $name."[fields][0][name]",
+									'name' => $name."[fields][0][ID]",
 									'show_option_none' => __( '--Select Fields--' ),
 									'class' => 'regular-select-fluid clonable-increment-name regular-select-box',
 									'post_type' => 'field',
@@ -54,16 +54,16 @@
 
 					<div class="panelbox clonable row row-group sortable">
 						<div class="row row-group">
-							<p class="regular-text-addon" type="text">Field <span class="clonable-increment-html"><?php echo ++$_i ?></span> <span class="text-muted">| <input type="text" class="text-muted" readonly disabled value="<?php echo get_post( $fields['name'] )->post_title ?>"></span></p>
+							<p class="regular-text-addon" type="text">Field <span class="clonable-increment-html"><?php echo ++$_i ?></span> <span class="text-muted">| <input type="text" class="text-muted" readonly disabled value="<?php echo get_post( $fields['ID'] )->post_title ?>"></span></p>
 						</div>
 						<div class="row">
 							<div class="ten columns">
 								<div class="form-group">
 									<?php
 									@wp_dropdown_pages(array(
-										'name' => $name."[fields][$i][name]",
+										'name' => $name."[fields][$i][ID]",
 										'show_option_none' => __( '--Select Fields--' ),
-										'selected' => $fields['name'],
+										'selected' => $fields['ID'],
 										'class' => 'regular-select-fluid clonable-increment-name regular-select-box',
 										'post_type' => 'field',
 									)); ?>
@@ -235,7 +235,7 @@
 			<?php
 			@wp_dropdown_pages(array(
 				'name' => $name."[display_template]",
-				'show_option_none' => __('-- Use Default --'),
+				'show_option_none' => __('Default'),
 				'selected' => $old['display_template'],
 				'class' => 'regular-text-fluid regular-select-box',
 				'post_type' => 'form-template',

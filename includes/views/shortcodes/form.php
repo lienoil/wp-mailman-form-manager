@@ -1,15 +1,14 @@
 <?php
 
-$form = $the_post;
-$form_options = $the_post_options;
+$the_form = get_post( $atts['id'] );
+$the_form_options = get_post_meta( $the_form->ID, $post_metaname, true );
 
-if ( ! empty( $the_post_options['display_template'] ) ) {
-	$template = get_post( $the_post_options['display_template'] );
+if ( ! empty( $the_form_options['display_template'] ) ) {
+	$template = get_post( $the_form_options['display_template'] );
 } else {
 	$template = new StdClass();
 	$template->post_content = htmlentities( file_get_contents( __DIR__ . '/form-default.php' ) );
 }
-
 
 if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 	/**
@@ -31,8 +30,8 @@ if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 		 *
 		 */
 		$message_template = WP_Mailman_Emailer::get_message_template();
-		if ( isset( $form_options['message']['template'] ) && ! empty( $form_options['message']['template'] ) ) {
-			$message_template = get_post( $form_options['message']['template'] );
+		if ( isset( $the_form_options['message']['template'] ) && ! empty( $the_form_options['message']['template'] ) ) {
+			$message_template = get_post( $the_form_options['message']['template'] );
 			$message_template = array(
 				'subject' => $message_template->post_title,
 				'message' => $message_template->post_content,
@@ -47,9 +46,25 @@ if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 			'template' => $message_template,
 			'type' => isset( $settings_options['type'] ) && ! empty( $settings_options['type'] ) ? $settings_options['type'] : 'plain-text',
 		);
-		$email_array = WP_Mailman_Emailer::compose( $post_fields, $options );
+		$the_email = WP_Mailman_Emailer::compose( $post_fields, $options );
 
-		WP_Mailman_Emailer::send( $email_array, $settings_options );
+		/**
+		 * Send
+		 *
+		 */
+		// $response = WP_Mailman_Emailer::send( $the_email, $settings_options );
+
+		// if ( $response ) WP_Mailman_Emailer::clear_posts();
+
+		/**
+		 * Save Post
+		 *
+		 */
+		$message_options = array(
+			'nonce' => $this->globals['nonce'],
+			'post_metaname' => $this->forms['field']['name'],
+		);
+		WP_Mailman_Message_Manager::write( $post_fields, $message_options );
 
 	} else {
 
@@ -58,11 +73,18 @@ if ( isset( $_POST['submitted'] ) && $_POST['submitted'] ) {
 	}
 }
 
+$this->set_current_shortcode_form(array(
+	'ID' => $the_form->ID,
+	'fields' => $the_form_options['fields'],
+	'template' => $template->post_content,
+	'errors' => $this->form_errors,
+));
+
 /**
  * The content from the template
  * @var [type]
  */
-$template_content = do_shortcode( $template->post_content );
+$template_content = $template->post_content;
 $template_content = html_entity_decode( $template_content );
 $template_content = FormBuilder::remove_empty_paragraphs( $template_content );
 
@@ -73,7 +95,9 @@ $template_content = FormBuilder::remove_empty_paragraphs( $template_content );
 // $is_ajax = ...
 ?>
 
-<form id="wp-mailman-form-manager-<?php echo $form->ID; ?>" action="<?php #echo esc_url( admin_url('admin-post.php') ); ?>" class="wp-mailman-form-manager wp-mailman-form-manager-<?php echo $form->ID; ?>" method="<?php echo $the_post_options['method']; ?>" novalidate>
+<?php echo WP_Mailman_Emailer::get_response( isset( $response ) ? $response : '' ); ?>
+
+<form id="wp-mailman-form-manager-<?php echo $the_form->ID; ?>" action="<?php #echo esc_url( admin_url('admin-post.php') ); ?>" class="wp-mailman-form-manager wp-mailman-form-manager-<?php echo $the_form->ID; ?>" method="<?php echo $the_form_options['method']; ?>" novalidate>
 
 	<?php # action hidden input ?>
 	<input type="hidden" name="action" value="<?php echo $pluginname; ?>">
@@ -81,99 +105,19 @@ $template_content = FormBuilder::remove_empty_paragraphs( $template_content );
 	<?php # echo isset( $this->form_errors['nonce'] ) ? $this->get_error('nonce') : ''; ?>
 
 	<?php
-
-	$the_main_content = "";
-
-	foreach ( $the_post_options['fields'] as $field ) :
-
-		$the_loop = FormBuilder::get_loop( $template_content );
-
-		/**
-		 * Field Row
-		 *
-		 */
-		$start_loop = "<div class='row'>";
-		$the_loop = str_replace( FormBuilder::$pattern_start_loop, $start_loop, $the_loop );
-		$end_loop = "</div>";
-		$the_loop = str_replace( FormBuilder::$pattern_end_loop, $end_loop, $the_loop );
-
-		$field = get_post( $field['name'] );
-		$forms = $this->forms;
-		$field_options = get_post_meta( $field->ID, $forms['field']['name'], true );
-
-		$field_options['type'] = $field_options['type'] !== "" ? $field_options['type'] : 'text';
-
-		/**
-		 * Field Label
-		 *
-		 */
-		if ( isset( $field_options['show_label'] ) && $field_options['show_label'] ) :
-			ob_start(); ?>
-			<label for="<?php echo $field_options['name']; ?>"><?php echo $field_options['label']; ?></label>
-			<?php
-			$label = ob_get_clean();
-			$the_loop = str_replace( FormBuilder::$pattern_label, $label, $the_loop );
-		endif;
-
-		/**
-		 * Field Input
-		 *
-		 */
-
-		// Input Attributes
-		$defaults = array();
-		foreach ( $field_options['attributes'] as $attribute ) {
-			$defaults[ $attribute['name'] ] = $attribute['value'];
-		}
-
-		$attr = array_merge( array(
-			'id' => $field_options['name'],
-			'name' => $field_options['name']."[value]",
-			'required' => isset( $field_options['required'] ) ? "required" : false
-		), $defaults );
-
-		// Input Field
-		ob_start();
-		echo FormBuilder::make_field( $field_options['type'], $attr, $field_options['value'], isset( $_POST[ $field_options['name'] ]['value'] ) ? $_POST[ $field_options['name'] ]['value'] : null ); ?>
-		<input type="hidden" name="<?php echo $field_options['name'].'[ID]'; ?>" value="<?php echo $field->ID; ?>">
-		<?php
-		$input = ob_get_clean();
-
-		$the_loop = str_replace( FormBuilder::$pattern_field, $input, $the_loop );
-
-		/**
-		 * Field Error
-		 *
-		 */
-		$error = $this->get_error( $field_options['name'] );
-		$the_loop = str_replace( FormBuilder::$pattern_error, $error, $the_loop );
-
-		/**
-		 * Append to the Main Content
-		 */
-		$the_main_content .= $the_loop;
-
-	endforeach;
-
 	/**
 	 * Field Submit
 	 * replace $template_content's FormBuilder::$pattern_submit with the $submit_button
 	 *
 	 */
 	ob_start();
-	$label = $form_options['submit_button']['label'];
-	$attributes = $form_options['submit_button']['attributes'];
+	$label = isset( $the_form_options['submit_button']['label'] ) && "" !== $the_form_options['submit_button']['label'] ? $the_form_options['submit_button']['label'] : 'Send';
+	$attributes = $the_form_options['submit_button']['attributes'];
 	echo FormBuilder::make_submit( $label, $attributes );
 	$submit_button = ob_get_clean();
 	$template_content = str_replace( FormBuilder::$pattern_submit, $submit_button, $template_content );
 
-	/**
-	 * Display the Field
-	 * replace $template_content's <loop> with the $the_main_content.
-	 *
-	 */
-	echo FormBuilder::make_content( $the_main_content, $template_content );
-
+	echo do_shortcode( $template_content );
 	?>
 
 </form>

@@ -16,6 +16,8 @@ require_once __DIR__ . '/WP_Mailman_Form_Manager.php';
 
 require_once __DIR__ . '/WP_Mailman_Dashboard_Widgets.php';
 
+require_once __DIR__ . '/WP_Mailman_Message_Manager.php';
+
 require_once __DIR__ . '/WP_Form_Builder.php';
 
 require_once __DIR__ . '/WP_Mailman_Emailer.php';

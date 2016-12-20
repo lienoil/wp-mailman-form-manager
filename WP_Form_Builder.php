@@ -11,7 +11,7 @@ class FormBuilder extends WP_Mailman_Form_Manager
 	protected static $pattern_error = '%error%';
 	protected static $pattern_submit = '%submit-button%';
 
-	public static function make_field( $type = "text", $attr = array(), $value = null, $old_value = null )
+	public static function make_field( $fieldname = "", $type = "text", $attr = array(), $value = null, $old_value = null, $subject = null, $hidden_field_id = null )
 	{
 		$attr_arr = array();
 		foreach ( $attr as $name => $val ) {
@@ -52,7 +52,15 @@ class FormBuilder extends WP_Mailman_Form_Manager
 				break;
 		}
 
-		return $html;
+		if ( ! is_null( $hidden_field_id ) ) {
+			$html .= self::make_hidden_field( $fieldname.'[ID]', $hidden_field_id );
+		}
+
+		return is_null( $subject ) ? $html : str_replace( self::$pattern_field, $html, $subject );
+	}
+
+	public static function make_hidden_field( $name, $value = "" ) {
+		return "<input type='hidden' name='$name' value='$value'>";
 	}
 
 	public static function make_select( $name, $value = null, $class = "", $options = array() )
@@ -68,7 +76,26 @@ class FormBuilder extends WP_Mailman_Form_Manager
 		<?php
 	}
 
-	public static function make_submit( $label, $attributes = array(), $is_html5 = true )
+	public static function make_label( $name, $label, $subject = null, $options = array() )
+	{
+		$options = array_merge(
+			array(
+				'class' => 'col-form-label',
+				'data-toggle' => '',
+			),
+			$options
+		);
+
+		ob_start();
+		?>
+		<label for="<?php echo $name; ?>" class="<?php echo $options['class']; ?>"><?php echo $label ?></label>
+		<?php
+		$label = ob_get_clean();
+
+		return is_null( $subject  ) ? $subject : str_replace( self::$pattern_label, $label, $subject );
+	}
+
+	public static function make_submit( $label, $attributes = array(), $form_id = null, $is_html5 = true )
 	{
 		$attr_arr = array();
 
@@ -79,11 +106,27 @@ class FormBuilder extends WP_Mailman_Form_Manager
 
 		$attr_html = implode( " ", $attr_arr );
 
+		$hidden_field = self::make_hidden_field( "submitted" . ( ! is_null( $form_id ) ? "-$form_id" : '' ), 'true' );
 		if ( $is_html5 ) {
-			return "<input type='hidden' name='submitted' value='1'><button $attr_html name='submit' type='submit'>$label</button>";
+			return "$hidden_field<button $attr_html name='submit' type='submit'>$label</button>";
 		}
 
-		return "<input type='hidden' name='submitted' value='1'><input $attr_html name='submit' value='$label'>";
+		return "$hidden_field<input $attr_html name='submit' value='$label'>";
+	}
+
+	public static function make_attributes( $attributes )
+	{
+		$defaults = array();
+		foreach ( $attributes as $attribute ) {
+			$defaults[ $attribute['name'] ] = $attribute['value'];
+		}
+
+		return $defaults;
+	}
+
+	public static function make_error( $error, $subject )
+	{
+		return str_replace( self::$pattern_error, $error, $subject );
 	}
 
 	/**

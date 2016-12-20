@@ -1,22 +1,18 @@
-
-<div class="row">
-	<div class="col-md-12">
-		<loop>
-			<div class="col-md-3 col-sm-4">
-				%label%
-			</div>
-			<div class="col-md-9 col-sm-8">
-				<div class="form-group">
-					%field%
-					%error%
-				</div>
-			</div>
-		</loop>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-sm-12 pull-sm-right">
+[loop]
+	[row]
+		[column class="col-md-3 col-sm-4 text-right text-sm-right"]
+			%label%
+		[/column]
+		[column class="col-md-9 col-sm-8"]
+			[form-group]
+				%field%
+				%error%
+			[/form-group]
+		[/column]
+	[/row]
+[/loop]
+[row]
+	[column class="col-sm-9 offset-sm-3 col-sm-offset-3"]
 		%submit-button%
-	</div>
-</div>
+	[/column]
+[/row]

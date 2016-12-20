@@ -27,6 +27,25 @@ class WP_Mailman_Emailer
 		return __DIR__ . "/includes/views/shortcodes/message-template-default.php";
 	}
 
+	public static function get_response( $response, $options = array() )
+	{
+		if ( "" == $response ) return;
+
+		ob_start();
+
+		$type = "danger";
+		$message = $response;
+
+		if ( $response ) {
+			$type = "success";
+			$message = "Form successfully submitted";
+		}
+
+		require __DIR__ . '/includes/views/messages/success.php';
+
+		return ob_get_clean();
+	}
+
 	public static function make_message_from_template( $post_fields, $message_template )
 	{
 		// echo "<pre>";
@@ -98,7 +117,7 @@ class WP_Mailman_Emailer
 		    	 * otherwise all other error messages will kick in.
 		    	 *
 		    	 */
-		    	if ( ! empty( $required_message ) && ( empty( $value ) || $value == "" ) ) {
+		    	if ( ! empty( $required_message ) && ( empty( $value ) || $value == "" ) && ! empty( $rules ) ) {
 		    		self::$errors[ $name ] = null;
 		    		self::$errors[ $name ][] = str_replace( '%field%', $field->post_title, $required_message );
 		    	}
@@ -149,6 +168,14 @@ class WP_Mailman_Emailer
 
 			case 'minlength':
 				if ( "" !== $input && strlen( $input ) >= $value ) return true;
+				break;
+
+			case 'maxwordlength':
+				if ( str_word_count( $input ) <= $value ) return true;
+				break;
+
+			case 'minwordlength':
+				if ( "" !== $input && str_word_count( $input ) >= $value ) return true;
 				break;
 
 			case 'url':
@@ -289,11 +316,10 @@ class WP_Mailman_Emailer
 			 */
 			case 'smtp_fallback':
 				$mail = self::smtp_init( $subject, $message, $emails, $embeds, $attachments, $options );
-					// echo "<pre>";
-					//     var_dump( $mail ); die();
-					// echo "</pre>";
-				// if (!$mail->Send()){
-				// }
+
+				if ( ! $mail->Send() ) {
+					return $mail->ErrorInfo();
+				}
 				break;
 
 			/**
@@ -321,6 +347,7 @@ class WP_Mailman_Emailer
 				break;
 		}
 
+		return true;
 	}
 
 	/**
@@ -341,21 +368,36 @@ class WP_Mailman_Emailer
 		$attachments = array();
 
 		foreach ( $post_fields as $field_name => $post_field ) {
-			$subject = preg_replace( '/%'.$field_name.'%/', $post_field['value'], $subject );
-			$message = preg_replace( '/%'.$field_name.'%/', $post_field['value'], $message );
+			if ( isset( $post_field['value'] ) ) {
+				$subject = preg_replace( '/%'.$field_name.'%/', $post_field['value'], $subject );
+				$message = preg_replace( '/%'.$field_name.'%/', $post_field['value'], $message );
+			}
 		}
 
 		switch ( $options['type'] ) {
 			case 'html':
 				preg_match_all( self::$regex_embedded_image, $message, $matches );
 
-				$message = preg_replace( self::$regex_embedded_image, '<img src="cid:$2"$3>', $message );
+				// $message = preg_replace( self::$regex_embedded_image, '<img src="$2"$3>', $message );
 
 				foreach ( $matches[2] as $i => $match ) {
-					$embedded[ $i ]['filename'] = $match;
-					$embedded[ $i ]['cid'] = $match;
+					$parts = pathinfo( $match );
+
+					$filename = parse_url( $match, PHP_URL_PATH );
+					$embedded[ $i ]['filename'] = $_SERVER['DOCUMENT_ROOT'] . $filename;
+					$embedded[ $i ]['cid'] =  $parts['filename'];
 					$embedded[ $i ]['name'] = basename( $match );
+// echo "<pre>";
+//     var_dump( $embedded ); die();
+// echo "</pre>";
+					$message = str_replace( $match, "cid:".basename( $parts['filename'] ), $message );
 				}
+
+				// preg_match_all('#<\s*img [^\>]*src\s*=\s*(["\'])(.*?)\1#im', $message, $matches);
+				$message = html_entity_decode( $message );
+				// echo "<pre>";
+				//     var_dump( htmlentities($message) ); die();
+				// echo "</pre>";
 
 				break;
 
@@ -406,6 +448,9 @@ class WP_Mailman_Emailer
 		$mail->Username = $options['smtp_details']['username'];
         $mail->Password = $options['smtp_details']['password'];
 
+        # Add ReplyTo
+		$mail->addReplyTo( $emails['from']['email'], $emails['from']['name'] );
+
 		# From
 		$mail->setFrom( $emails['from']['email'], $emails['from']['name'] );
 
@@ -424,9 +469,6 @@ class WP_Mailman_Emailer
 			if ( "" !== $bcc && ! empty( $bcc ) ) $mail->addAddress( trim( sanitize_email( $bcc ) ) );
 		}
 
-		# Reply To
-		$mail->addReplyTo( $emails['from']['email'] );
-
 		# Send as HTML?
 		$mail->isHTML = isset( $options['type'] ) ? $options['type'] : 'html';
 
@@ -441,7 +483,7 @@ class WP_Mailman_Emailer
 
 		# Subject & Message
 		$mail->Subject = $subject;
-		$mail->Body    = nl2br( $message );
+		$mail->Body    = wpautop( $message );
 		$mail->AltBody = strip_tags( $message );
 
 		return self::$mail = $mail;
@@ -453,5 +495,11 @@ class WP_Mailman_Emailer
 
 	private static function mail_only() {
 		die('mail_only asdasd');
+	}
+
+	public static function clear_posts()
+	{
+		$_POST = null;
+		unset( $_POST );
 	}
 }

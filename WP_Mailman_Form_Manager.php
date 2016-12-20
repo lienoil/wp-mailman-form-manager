@@ -14,6 +14,7 @@ class WP_Mailman_Form_Manager
 	protected $cpts, $forms, $metaboxes, $pages, $settings, $shortcodes, $enqueueables;
 	protected $form_builder;
 	protected $form_errors;
+	protected $current_shortcode_form;
 
 	/**
 	 * Initialize variables
@@ -377,10 +378,6 @@ class WP_Mailman_Form_Manager
 
 		    	ob_start();
 
-		    	$the_post = get_post( $atts['id'] );
-
-		    	$the_post_options = get_post_meta( $the_post->ID, $post_metaname, true );
-
 		    	if ( file_exists( get_template_directory_uri() . "/wp-mailman-form-manager/{$shortcode_options['shortcode']}.php" ) ) {
 			    	require get_template_directory_uri() . "/wp-mailman-form-manager/{$shortcode_options['shortcode']}.php";
 		    	} else {
@@ -393,6 +390,20 @@ class WP_Mailman_Form_Manager
 		    } );
 
 		}
+	}
+
+	public function set_current_shortcode_form( $current_shortcode_form )
+	{
+		$this->current_shortcode_form = new StdClass();
+		$this->current_shortcode_form->ID = $current_shortcode_form['ID'];
+		$this->current_shortcode_form->fields = $current_shortcode_form['fields'];
+		$this->current_shortcode_form->template = $current_shortcode_form['template'];
+		$this->current_shortcode_form->errors = $current_shortcode_form['errors'];
+	}
+
+	public function get_current_shortcode_form()
+	{
+		return $this->current_shortcode_form;
 	}
 
 	/**
@@ -575,9 +586,9 @@ class WP_Mailman_Form_Manager
 	{
 		$errors = $this->form_errors;
 
-		if ( ! is_array( $errors[ $name ] ) ) return $errors[ $name ];
-
 		if ( ! isset( $errors[ $name ] ) ) return false;
+
+		if ( ! is_array( $errors[ $name ] ) ) return $errors[ $name ];
 
 		switch ( $return_type ) {
 			case 'array':
